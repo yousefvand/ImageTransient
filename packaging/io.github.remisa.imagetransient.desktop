@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=Image Transient
+Comment=Create transition videos from two images
+Exec=imagetransient
+Icon=io.github.remisa.imagetransient
+Categories=AudioVideo;Video;Graphics;Qt;
+Terminal=false
+StartupNotify=true

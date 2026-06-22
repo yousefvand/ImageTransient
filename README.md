@@ -1,34 +1,42 @@
 # Image Transient
 
-A small Qt 6 desktop app for Arch Linux that creates a short MP4 transition video from two still images.
+![Image Transient demo](demo.png)
 
-The app is Wayland-friendly because it does **not** record the screen. It uses Qt for the UI and FFmpeg for rendering.
+Image Transient is a compact Qt 6 Widgets desktop app that creates a short MP4 transition video from two still images.
 
 ## Features
 
-- Select or drag-and-drop two images
-- Export MP4/H.264 video
-- Choose transition type
-- Set first-image hold duration, transition duration, and second-image hold duration
-- Set output resolution, FPS, CRF quality, and encoder preset
+- Compact main window
+- Drag-and-drop or browse for two images
+- Preview button with a modal picture box and blend slider
+- Export MP4/H.264 video through FFmpeg
+- Choose FFmpeg `xfade` transition type
+- Set first-image hold, transition duration and second-image hold
+- Set output resolution, FPS, CRF quality and encoder preset
 - Copy the generated FFmpeg command
-- KDE menu `.desktop` entry included
+- Linux `.desktop` launcher and icon
+- AUR helper for Archlinux users.
+
+## License
+
+Image Transient is licensed under `GPL-3.0-or-later`.
+
+Qt is used through the normal Qt open-source model. The program links to Qt 6 Widgets dynamically on Linux distribution packages.
+
+## Runtime dependency
+
+FFmpeg must be installed and available in `PATH`.
 
 ## Supported input images
 
-PNG, JPEG, WebP, BMP, TIFF and anything else your FFmpeg build can decode.
+PNG, JPEG, WebP, BMP, TIFF and any other image format your FFmpeg build can decode.
 
-## Build on Arch Linux
+## Quick install from source
 
-```bash
-sudo pacman -S --needed base-devel cmake ninja qt6-base ffmpeg
-./build-arch.sh
-./build/imagetransient
-```
-
-## Install on Arch Linux
+The root installer auto-detects common Linux distributions:
 
 ```bash
+chmod +x install.sh scripts/*.sh
 ./install.sh
 ```
 
@@ -37,6 +45,112 @@ Then launch **Image Transient** from the KDE application launcher, or run:
 ```bash
 imagetransient
 ```
+
+## Arch Linux / Manjaro / EndeavourOS
+
+Build only:
+
+```bash
+sudo pacman -S --needed base-devel cmake ninja qt6-base ffmpeg
+./scripts/build-linux.sh
+./build/release/imagetransient
+```
+
+Install:
+
+```bash
+./scripts/install-arch.sh
+```
+
+Legacy wrapper kept for convenience:
+
+```bash
+./build-arch.sh
+```
+
+## Debian / Ubuntu / Linux Mint / Pop!_OS
+
+```bash
+./scripts/install-debian-ubuntu.sh
+```
+
+The script installs:
+
+```bash
+build-essential cmake ninja-build qt6-base-dev ffmpeg
+```
+
+## Fedora / RHEL / Rocky / AlmaLinux
+
+```bash
+./scripts/install-fedora.sh
+```
+
+The script installs the compiler, CMake, Ninja, Qt 6 development packages and FFmpeg using `dnf`.
+
+On some Fedora/RHEL-like systems, FFmpeg may require extra multimedia repositories such as RPM Fusion. Enable those repositories first if `dnf install ffmpeg` cannot find FFmpeg.
+
+## openSUSE Leap / Tumbleweed
+
+```bash
+./scripts/install-opensuse.sh
+```
+
+The script installs the C++ development pattern, CMake, Ninja, Qt 6 development packages and FFmpeg.
+
+## Alpine Linux
+
+```bash
+./scripts/install-alpine.sh
+```
+
+The script installs:
+
+```bash
+build-base cmake ninja qt6-qtbase-dev ffmpeg
+```
+
+## Generic Linux build without installing dependencies
+
+Install these dependencies with your package manager:
+
+- C++17 compiler
+- CMake 3.20+
+- Ninja
+- Qt 6 Widgets development package
+- FFmpeg runtime
+
+Then build:
+
+```bash
+./scripts/build-linux.sh
+./build/release/imagetransient
+```
+
+Manual CMake build:
+
+```bash
+cmake -S . -B build/release -G Ninja -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr/local
+cmake --build build/release --parallel
+sudo cmake --install build/release
+```
+
+Useful overrides:
+
+```bash
+BUILD_DIR=build/debug BUILD_TYPE=Debug ./scripts/build-linux.sh
+PREFIX=/usr/local ./scripts/install-arch.sh
+```
+
+## How preview works
+
+The preview window loads both source images into a modal dialog. The slider ranges from 0 to 100:
+
+- Far left: the picture box shows picture 1.
+- Middle: the picture box shows an even blend of picture 1 and picture 2.
+- Far right: the picture box shows picture 2.
+
+This preview is a fast Qt image blend. The final video render still uses FFmpeg `xfade`.
 
 ## How rendering works
 
